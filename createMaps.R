@@ -57,10 +57,15 @@ options(scipen = 999)
 
 data.d$totl <- data.d$budget/data.d$denom
 
-#HACK TO REMOVE DUPS################################
+#ADD LETTERS TO REMOVE DUPLICATES! ##
 test <- duplicated(data.d$totl)
 n <- 1:length(data.d$totl[test])
-data.d$totl[test] <- data.d$totl[test] + n/100
+
+sam <- sample(letters[1:26], length(n), FALSE)
+
+data.d$totl[test] <- paste0(data.d$totl[test], sam)
+
+if(sum(duplicated(data.d$totl)) > 1 ) print("STOP NAMES DUPLICATED!")
 ####################################################
 names(x) <- data.d$totl
 
@@ -73,6 +78,9 @@ x1 = lapply(names(x), function(name){
 
 master <- do.call("rbind", x1)
 master$country <- as.character(master$country)
+
+##Remove letter used to create unique values
+master$amount <- gsub(pattern = "[a-z]+$","",master$amount)
 master$amount <- as.numeric(as.character(master$amount))
 master$country[master$country == "Cameroun"] <- "Cameroon"
 master$country <- countrycode(master$country, origin = "country.name",
