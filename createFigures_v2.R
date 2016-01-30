@@ -317,35 +317,65 @@ nodes.as <- filter(nodes.as, !nodes.test)
 net <- graph.data.frame(links.as, nodes.as, directed=T)
 net <- simplify(net, remove.multiple = F, remove.loops = T)
 
-#set colors
-colrs = adjustcolor(c("blue", "lightblue","grey","red"))
-
-#set weights
-E(net)$width <-E(net)$weight/(exp(13)) # set weights!
-
-#define shaded region
-fao.test <- nodes.af$name[nodes.af$faoClass %in% c(1,2)]
-vert <- names(V(net))
-mark <- grep("TRUE",vert %in% fao.test)
-
-
-# set layout 
-#set.seed(31)
-set.seed(30)
-l <- layout.fruchterman.reingold(net, repulserad=vcount(net)^4,
-                                 area=vcount(net)^2.4)
-# plot
-plot(net,
-     edge.arrow.size=.2,
-     edge.arrow.mode = 0,
-     layout = l,
-     vertex.color = colrs[V(net)$faoClass],
-     vertex.size = 11,
-     vertex.label.family = "Arial",
-     vertex.label.color = "black",
-     mark.groups = mark, mark.col = "#C5E5E7", mark.border = NA,
-     main = "Network of Agricultural Statistical \n Capacity Development \n in Africa")
+# #set colors
+# colrs = adjustcolor(c("blue", "lightblue","grey","red"))
+# 
+# #set weights
+# E(net)$width <-E(net)$weight/(exp(13)) # set weights!
+# 
+# #define shaded region
+# fao.test <- nodes.af$name[nodes.af$faoClass %in% c(1,2)]
+# vert <- names(V(net))
+# mark <- grep("TRUE",vert %in% fao.test)
+# 
+# 
+# # set layout 
+# #set.seed(31)
+# set.seed(30)
+# l <- layout.fruchterman.reingold(net, repulserad=vcount(net)^4,
+#                                  area=vcount(net)^2.4)
+# # plot
+# plot(net,
+#      edge.arrow.size=.2,
+#      edge.arrow.mode = 0,
+#      layout = l,
+#      vertex.color = colrs[V(net)$faoClass],
+#      vertex.size = 11,
+#      vertex.label.family = "Arial",
+#      vertex.label.color = "black",
+#      mark.groups = mark, mark.col = "#C5E5E7", mark.border = NA,
+#      main = "Network of Agricultural Statistical \n Capacity Development \n in Africa")
+#     legend(x=.8, y= .5,c("FAO only","FAO and other donors","No FAO involvement",
+#                      "Donor"),
+#        pch=21,col="#777777",pt.bg=colrs,pt.cex=2,cex=.8,bty="n",ncol=1, 
+#        box.lwd = .1, x.intersp = .1, y.intersp = .4)
+    
+    #set colors
+    colrs = adjustcolor(c("blue", "lightblue","grey","red"))
+    
+    #set weights
+    E(net)$width <-E(net)$weight/(exp(12.5)) # set weights!
+    
+    #define shaded region
+    fao.test <- nodes.as$name[nodes.as$faoClass %in% c(1,2)]
+    vert <- names(V(net))
+    mark <- grep("TRUE",vert %in% fao.test)
+    
+    
+    # set layout 
+    set.seed(31)
+    #set.seed(30)
+    l <- layout.fruchterman.reingold(net,area=vcount(net))
+    # plot
+    plot(net,
+         edge.arrow.size=.2,
+         edge.arrow.mode = 0,
+         layout = layout.lgl,
+         vertex.color = colrs[V(net)$faoClass],
+         vertex.size = 11,
+         mark.groups = mark, mark.col = "#C5E5E7", mark.border = NA,
+         main = "Network of Agricultural Statistical \n Capacity Development \n in Asia")
     legend(x=.8, y= .5,c("FAO only","FAO and other donors","No FAO involvement",
-                     "Donor"),
-       pch=21,col="#777777",pt.bg=colrs,pt.cex=2,cex=.8,bty="n",ncol=1, 
-       box.lwd = .1, x.intersp = .1, y.intersp = .4)
+                         "Donor"),
+           pch=21,col="#777777",pt.bg=colrs,pt.cex=2,cex=.8,bty="n",ncol=1, 
+           box.lwd = .1, x.intersp = .1, y.intersp = .4)    
