@@ -142,16 +142,20 @@ for(i in 1:nrow(test)){
 #bind donors w/ unlisted countries
 master.c <- data.frame(donors = y, country = unlist(x))
 master.c$country <- as.character(master.c$country)
+master.c$country[master.c$country == "Cameroun"] <- "Cameroon"
 master.c$country <- countrycode(master.c$country, origin = "country.name",
                               destination = "country.name", warn = TRUE)
 
+# master.c1 <- master.c %>%
+#               group_by(country) %>%
+#               summarize(donors = n())
+
 master.c <- master.c %>%
-              group_by(country) %>%
-              summarize(donors = n())
+                      group_by(country) %>%
+                      summarize(donors = length(unique(donors)))
 
 
 master <- merge(master, master.c, all = TRUE)
-
 
 
 ## PLOT
