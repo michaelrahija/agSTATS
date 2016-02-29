@@ -34,7 +34,7 @@ if(sys[5] == "x86_64"){
 
 setwd(dir)
 
-data <- read.csv(paste0(data.dir,"agstats_final_for narrative_v2.csv"), 
+data <- read.csv(paste0(data.dir,"agstats_final_for narrative_V1.csv"), 
                  stringsAsFactors = FALSE)
 
 
@@ -247,7 +247,7 @@ ggplot(master, aes(x=amount.mil, y=score)) +
     geom_point(aes(col = score.g), size = 5) + 
     #scale_color_grey(start = .2, end = 1) +
     scale_color_manual(values = c("red","lightgrey","darkgrey","black")) +
-    geom_text(aes(label=country), size = 4) +
+    geom_text(aes(label=country), size = 3, vjust = -.25, hjust = -.25) +
     theme(legend.position="bottom",
           legend.title = element_blank()) +
     guides(colour = guide_legend(override.aes = list(size=5), 
