@@ -259,8 +259,8 @@ mark <- grep("TRUE",vert %in% fao.test)
 
 
 # set layout 
-set.seed(3200)
-#set.seed(31)
+#set.seed(3200)
+set.seed(31)
 #set.seed(30)
 l <- layout.fruchterman.reingold(net, repulserad=vcount(net)^4,
                                   area=vcount(net)^2.4)

@@ -1,7 +1,7 @@
 ---
 title: "AGSTATS v2"
 author: "Michael Rahija"
-date: "January 27, 2016"
+date: "`r format(Sys.time(),'%B %d , %Y')`"
 output: pdf_document
 ---
 
@@ -34,7 +34,7 @@ if(sys[5] == "x86_64"){
 
 setwd(dir)
 
-data <- read.csv(paste0(data.dir,"agstats_final_for narrative_V1.csv"), 
+data <- read.csv(paste0(data.dir,"agstats_final_for narrative_03_2016.csv"), 
                  stringsAsFactors = FALSE)
 
 

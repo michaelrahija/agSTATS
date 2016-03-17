@@ -64,7 +64,7 @@ temp <- data.c
 #select only needed variables
 temp <- select(temp,donor,country,budget)
 temp$country[temp$country == "C\xf4te d'Ivoire"] <- "Cote d'Ivoire"
-
+temp$country[temp$country == "Cameroun"] <- "Cameroon"
 
 #remove NA budgets
 temp <- filter(temp, !is.na(budget))
@@ -264,9 +264,9 @@ mark <- grep("TRUE",vert %in% fao.test)
 # set layout 
 set.seed(3200)
 #set.seed(31)
-#set.seed(30)
-l <- layout.fruchterman.reingold(net, repulserad=vcount(net)^4,
-                                  area=vcount(net)^2.4)
+set.seed(30)
+l <- layout.fruchterman.reingold(net, repulserad=vcount(net),
+                                  area=vcount(net))
 # plot
 plot(net,
      edge.arrow.size=.2,
