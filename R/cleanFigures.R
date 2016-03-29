@@ -1,4 +1,13 @@
-#clean data for figures
+##' Cleans AGSTATS dataset containg information on projects involved in stats capacity dev
+##' 
+##' Cleans dataset including column names, donor names, project types, etc.
+##' 
+##' @param data is a df containing AGSTATS data
+
+##' @return a cleaned df
+##'
+##' @export
+##' 
 
 
 cleanFigures <- function(df = data) {
@@ -56,23 +65,6 @@ cleanFigures <- function(df = data) {
   
   trim.trailing.comma.space <- function (x) sub("\\,+ $", "", x)
   df$country <- trim.trailing.comma.space(df$country)
-  
-  # #--Clean-up rows w/ more than 1 donor
-  # 
-  # #extract rows w/ > 1 donor
-  # multi.donor.rows <- grep(pattern = "%)",df$donor)
-  # multi <- df[multi.donor.rows,]
-  # 
-  # 
-  # #remove rows w/ > 1 donor from original dataset
-  # df <- df[-multi.donor.rows,]
-  # 
-  # #divide donors and duplicate contents of row
-  # 
-  # strsplit(multi$donor,",")
-  
-  
-  
   
 df 
   
