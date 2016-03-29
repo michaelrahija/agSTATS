@@ -3,17 +3,13 @@
 #create maps and figures for analysis
 
 #-- import data and packages
-#library(DT)
 library(dplyr)
 library(ggplot2)
-#library(RColorBrewer)
-#library(maps)
 library(countrycode)
-#library(scales)
-#library(igraph)
 library(gisfao)
 library(sp)
 library(tidyr)
+library(grid)
 
 sys <- Sys.info()
 
@@ -48,9 +44,18 @@ data <- cleanFigures(data)
 source("R/flowMap.R")
 flowMap(data = data, include.donors = TRUE)
 
-#create maps by implementer
+#create maps by implementer - FAO
 source("R/implementerMap.R")
+fao <- implementerMap(df = data,
+               implementing.institution = "FAO")
 
+usda <- implementerMap(df = data,
+               implementing.institution = "USDA")
+
+eu <- implementerMap(df = data,
+                     implementing.institution = "EU")
+
+eu
 #create implementer table
 impl <- select(data, agId, implementer)
 temp <- separate(impl,implementer, 
