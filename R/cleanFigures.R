@@ -3,11 +3,16 @@
 
 cleanFigures <- function(df = data) {
   
-  colnames(df) <- gsub("\\.","",colnames(data))
+  colnames(df) <- gsub("\\.","",colnames(df))
   
-  if (colnames(df)[1] == "X") df <- data[,-1]
+  #remove useless variables
+  if (colnames(df)[1] == "X")       df <- data[,-1]
+  if("Action" %in% colnames(df))    df <- select(df, -Action) 
+  if("Comments" %in% colnames(df))  df <- select(df, -Comments)
   
-  colnames(df) <- c("source",
+  
+  colnames(df) <- c("agId",
+                      "source",
                       "donor",
                       "implementer",
                       "country",
@@ -21,8 +26,11 @@ cleanFigures <- function(df = data) {
                       "assCountry",
                       "projectSymbol",
                       "baby",
-                      "GsVohCard",
-                      "comments")
+                      "GsVohCard")#,
+                      #"comments")
+  
+  #filter rows w/o project id
+  df <- df[!is.na(df$agId),]
   
   
   df$budget <- as.numeric(gsub(",","",df$budget))
@@ -48,6 +56,23 @@ cleanFigures <- function(df = data) {
   
   trim.trailing.comma.space <- function (x) sub("\\,+ $", "", x)
   df$country <- trim.trailing.comma.space(df$country)
+  
+  # #--Clean-up rows w/ more than 1 donor
+  # 
+  # #extract rows w/ > 1 donor
+  # multi.donor.rows <- grep(pattern = "%)",df$donor)
+  # multi <- df[multi.donor.rows,]
+  # 
+  # 
+  # #remove rows w/ > 1 donor from original dataset
+  # df <- df[-multi.donor.rows,]
+  # 
+  # #divide donors and duplicate contents of row
+  # 
+  # strsplit(multi$donor,",")
+  
+  
+  
   
 df 
   

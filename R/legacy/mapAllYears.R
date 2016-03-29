@@ -95,12 +95,14 @@ mapAllYears <- function(df = data,
   
   master.t$country  <- gsub("^ +","", master.t$country)
   
+  
   ##---CREATE DF FOR DONORS BY COUNTRY AND MERGE
   donors <- select(data.d,country,donor)
   x <- strsplit(donors$country,",")
   
   names <- donors$donor
   test <- data.frame(names = as.character(names), rep = sapply(x,length))
+  
   y <- c()
   
   #create vector of donors
@@ -116,9 +118,12 @@ mapAllYears <- function(df = data,
   master.c$country <- countrycode(master.c$country, origin = "country.name",
                                   destination = "country.name", warn = TRUE)
   
-  # master.c1 <- master.c %>%
-  #               group_by(country) %>%
-  #               summarize(donors = n())
+
+  #For some projects, there are > 1 donors. need to split and make more rows
+  source("R/sepDonors.R")
+  master.c <- sepDonors(master.c,
+                        donor.names.only = TRUE)
+  master.c <- select(master.c,country,donors)
   
   master.c <- master.c %>%
     group_by(country) %>%
@@ -147,7 +152,7 @@ mapAllYears <- function(df = data,
             axis.title.y = element_blank()) +
             geom_point(data=master, aes(x=clong, y=clat, size = amount, fill = Donors), 
                        shape = 21, color = "lightgrey") +
-    #scale_fill_gradient(low = "whitesmoke", high = "black") +
+    scale_fill_gradient(low = "whitesmoke", high = "black") +
           scale_size(#max_size = 10,
                     range = c(3,12),
                     breaks = breaks,
