@@ -13,7 +13,8 @@
 
 
 flowMap <- function(data = data, 
-                    include.donors = TRUE){
+                    include.donors = TRUE,
+                    fixed.range = c(1,9)){
   
   if(sum(is.na(data$start)) > 1) stop("Start dates missing!")
   if(sum(is.na(data$finish)) > 1) stop("Finish dates are missing!")
@@ -158,7 +159,7 @@ flowMap <- function(data = data,
   #set breaks
   breaks = c(500000,1000000,2000000,3000000)
   names(master)[names(master) == "donors"] <- "Donors"
-  range = c(1,4)
+  #range = c(1,4)
   
  if(include.donors == TRUE){
     map <- ggplot() +
@@ -174,7 +175,7 @@ flowMap <- function(data = data,
                  shape = 21, color = "lightgrey") +
       scale_fill_gradient(low = "lightblue", high = "black") +
       scale_size(#max_size = 10,
-        range = c(1,9),
+        range = fixed.range,
         breaks = breaks,
         name = "Total Funding \n(million USD)",
         labels = c(".5","1", "2",
@@ -196,7 +197,7 @@ flowMap <- function(data = data,
                   shape = 21, color = "lightgrey", fill = "black") +
        scale_fill_gradient(low = "lightblue", high = "black") +
        scale_size(#max_size = 10,
-         range = c(1,9),
+         range = fixed.range,
          breaks = breaks,
          name = "Total Funding \n(million USD)",
          labels = c(".5","1", "2",
