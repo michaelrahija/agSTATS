@@ -156,9 +156,9 @@ flowMap <- function(data = data,
   ##--CREATE PLOTS
   
   #set breaks
-  breaks = c(1000000,2000000,3000000)
+  breaks = c(500000,1000000,2000000,3000000)
   names(master)[names(master) == "donors"] <- "Donors"
-  range = c(1,5)
+  range = c(1,4)
   
  if(include.donors == TRUE){
     map <- ggplot() +
@@ -174,10 +174,10 @@ flowMap <- function(data = data,
                  shape = 21, color = "lightgrey") +
       scale_fill_gradient(low = "lightblue", high = "black") +
       scale_size(#max_size = 10,
-        range = c(1,7),
+        range = c(1,9),
         breaks = breaks,
         name = "Total Funding \n(million USD)",
-        labels = c("1", "2",
+        labels = c(".5","1", "2",
                    "3")) + 
       geom_text(size=4) 
   }
@@ -196,11 +196,11 @@ flowMap <- function(data = data,
                   shape = 21, color = "lightgrey", fill = "black") +
        scale_fill_gradient(low = "lightblue", high = "black") +
        scale_size(#max_size = 10,
-         range = c(2,7),
+         range = c(1,9),
          breaks = breaks,
          name = "Total Funding \n(million USD)",
-         labels = c("1", "2",
-                    "3")) +
+         labels = c(".5","1", "2",
+                    "3")) + 
        geom_text(size=4)
   
   

@@ -34,7 +34,7 @@ if(sys[5] == "x86_64"){
 
 setwd(dir)
 
-data <- read.csv(paste0(data.dir,"agstats_final_for narrative_V4.csv"), 
+data <- read.csv(paste0(data.dir,"agstats_final_for narrative_V5.csv"), 
                  stringsAsFactors = FALSE)
 
 source("R/cleanFigures.R")
@@ -43,11 +43,15 @@ data <- cleanFigures(data)
 #create estimated flow map
 source("R/flowMap.R")
 flowMap(data = data, include.donors = TRUE)
+flowMap(data = data, include.donors = FALSE)
 
 #create maps by implementer - FAO
 source("R/implementerMap.R")
 fao <- implementerMap(df = data,
                implementing.institution = "FAO")
+
+wb <- implementerMap(df = data,
+                     implementing.institution = "WB")
 
 usda <- implementerMap(df = data,
                implementing.institution = "USDA")

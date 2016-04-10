@@ -13,10 +13,10 @@
 
 implementerMap <- function(df= data, 
                            implementing.institution = c("FAO","USDA",
-                                                      "EU","World Bank")){
+                                                      "EU","World Bank","WB")){
   
   if(!(implementing.institution %in% c("FAO","USDA",
-                                     "EU","World Bank"))){
+                                     "EU","World Bank","WB"))){
     stop(paste0(implementing.institution," ","is not an option."))
   }
   
