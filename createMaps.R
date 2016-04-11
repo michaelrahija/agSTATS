@@ -27,11 +27,9 @@ if(sys[5] == "x86_64"){
 }
 
 
-#for Strengthening Agricultural Statistics and Food Security Information in CARD Countries through South-South Cooperation
-#change name of cote d'ivoire
+#need to figure out way to keep scale for bubble sizes
 
-#also for "Space Data Management System (SDMS) -  Acquire, Query, Process and Deliver Earth Observation Data and Forest Information Products to Developing Countries." you have global as the country, but allocated country column = 1. Please fix.
-
+#dataset = donors, use "," for seperating, not ";"
 setwd(dir)
 
 data <- read.csv(paste0(data.dir,"agstats_final_for narrative_V5.csv"), 
@@ -42,7 +40,7 @@ data <- cleanFigures(data)
 
 #create estimated flow map
 source("R/flowMap.R")
-flowMap(data = data, include.donors = TRUE)
+flowMap(data = data, include.donors = TRUE,fixed.range = c(1,9))
 flowMap(data = data, include.donors = FALSE)
 
 #create maps by implementer - FAO

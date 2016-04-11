@@ -30,7 +30,8 @@ implementerMap <- function(df= data,
   
   source("R/flowMap.R")
   map <- flowMap(data = df,
-                 include.donors = FALSE)
+                 include.donors = FALSE,
+                 fixed.range = c(1,5))
   
   map <- map + ggtitle(paste("Implemented by",
                              implementing.institution))
