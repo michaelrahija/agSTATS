@@ -16,6 +16,7 @@ output: pdf_document
 library(dplyr)
 library(ggplot2)
 library(countrycode)
+library(tidyr)
 
 sys <- Sys.info()
 
@@ -34,7 +35,7 @@ if(sys[5] == "x86_64"){
 
 setwd(dir)
 
-data <- read.csv(paste0(data.dir,"agstats_final_for narrative_03_2016.csv"), 
+data <- read.csv(paste0(data.dir,"agstats_final_for narrative_V5.csv"), 
                  stringsAsFactors = FALSE)
 
 
@@ -55,7 +56,7 @@ ca$country <- countrycode(ca$country, origin = "country.name",
 ```{r, echo = FALSE}
 tab <- data %>%
             group_by(projectType) %>%
-            summarize(noProject = n())
+            summarize(noProject = length(unique(agId)))
 
 knitr::kable(tab)            
 ```
@@ -72,9 +73,14 @@ knitr::kable(tab)
 # Total budgets by donors
 
 ```{r, echo = FALSE}
-tab <- data %>%
+source("R/computeDonorContrib.R")
+donor <- computeDonorContrib(data)
+
+donor$contrib <- donor$budget * donor$percent
+
+tab <- donor %>%
             group_by(donor) %>%
-            summarize(totalBudget = sum(budget))
+            summarize(totalBudget = sum(contrib))
 tab <- arrange(tab, desc(totalBudget))
 
 knitr::kable(tab)
@@ -83,11 +89,15 @@ knitr::kable(tab)
 # Regional level
 ## Total budget by donor and region
 ```{r, echo = FALSE}
-tab <- data %>%
-            group_by(Region, donor) %>%
-            summarize(totalBudget = sum(budget))
 
-tab <- arrange(tab, Region, donor, totalBudget)
+#merge donor table w/ data on agId
+donor.region <- merge(donor, data, by = "agId", all = TRUE)
+
+tab <- donor.region %>%
+            group_by(Region, donor.x) %>%
+            summarize(totalBudget = sum(contrib))
+
+tab <- arrange(tab, Region, donor.x, totalBudget)
 knitr::kable(tab)
 
 ```
@@ -216,10 +226,6 @@ master <- filter(master, !is.na(amount))
 master <- filter(master, !is.na(score))
 master$score <- as.numeric(master$score)
 
-#create score group
-# master$score.g[master$score > (mean(master$score) + .5*sd(master$score)) &
-#                master$amount < ] <- "high score, low committment"
-
 n = .15
 master$score.g[master$score < (mean(master$score) - n*sd(master$score)) &
                master$amount < (mean(master$amount) - n*sd(master$amount))] <- "low score, low support"
@@ -228,16 +234,11 @@ master$score.g[master$score < (mean(master$score) - n*sd(master$score)) &
 master$score.g[master$score < (mean(master$score) - n*sd(master$score)) &
                master$amount > (mean(master$amount) - n*sd(master$amount))] <- "low score, mid-high support"
 
-# master$score.g[master$score > (mean(master$score) - n*sd(master$score)) &
-#                master$amount < (mean(master$amount) - n*sd(master$amount))] <- "mid-high score, low support"
 
 master$score.g[master$score > (mean(master$score) - n*sd(master$score)) &
                master$amount < 3000000] <- "mid-high score, low support"
 master$score.g[master$score > (mean(master$score) - n*sd(master$score)) &
                master$amount > 3000000] <- "mid-high score, mid-high support"
-# master$score.g[master$score > (mean(master$score) - n*sd(master$score)) &
-#                master$amount > (mean(master$amount) - n*sd(master$amount))] <- "mid-high score, mid-high support"
-
 
 
 master$score.g[is.na(master$score.g)] <- NA
