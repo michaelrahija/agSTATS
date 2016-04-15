@@ -15,7 +15,7 @@ computeDonorContrib <- function(df = data){
   
 
   #take only relevent columns
-  df <- select(data, donor, country, budget,agId)
+  df <- select(df, donor, country, budget,agId)
   
   #create column names for spreading donor
   donor.cols <- paste0("Donor",1:11)
