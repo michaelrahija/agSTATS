@@ -54,27 +54,33 @@ ca$country <- countrycode(ca$country, origin = "country.name",
 
 ## No of projects by type
 ```{r, echo = FALSE}
-tab <- data %>%
+data.ass <- data
+data.ass$agId <- gsub("\\.[a-z]+","",data$agId)
+tab <- data.ass %>%
             group_by(projectType) %>%
             summarize(noProject = length(unique(agId)))
 
 knitr::kable(tab)            
 ```
 
-## Total budget for each project type
+## Total budget for each project type, self-funded removed
 ```{r, echo = FALSE}
-tab <- data %>%
+source("R/removeSelfFunded.R")
+noself <- removeSelfFunded(data)
+
+tab <- noself %>%
             group_by(projectType) %>%
             summarize(totalBudget = sum(budget))
 
 knitr::kable(tab)            
 ```
 
-# Total budgets by donors
+# Total budgets by donors, self-funded removed
 
 ```{r, echo = FALSE}
+
 source("R/computeDonorContrib.R")
-donor <- computeDonorContrib(data)
+donor <- computeDonorContrib(noself)
 
 donor$contrib <- donor$budget * donor$percent
 
@@ -86,25 +92,10 @@ tab <- arrange(tab, desc(totalBudget))
 knitr::kable(tab)
 ```
 
-# Regional level
-## Total budget by donor and region
+
+## Total budget by region, self funded removed
 ```{r, echo = FALSE}
-
-#merge donor table w/ data on agId
-donor.region <- merge(donor, data, by = "agId", all = TRUE)
-
-tab <- donor.region %>%
-            group_by(Region, donor.x) %>%
-            summarize(totalBudget = sum(contrib))
-
-tab <- arrange(tab, Region, donor.x, totalBudget)
-knitr::kable(tab)
-
-```
-
-## Total budget by region
-```{r, echo = FALSE}
-tab <- data %>%
+tab <- noself %>%
             group_by(Region) %>%
             summarize(totalBudget = sum(budget))
 
@@ -112,9 +103,9 @@ tab <- arrange(tab, desc(totalBudget))
 knitr::kable(tab)
 ```
 
-# TOTAL BUDGET, BY COUNTRY **SUBSET FOR assCountry = 1**
+# TOTAL BUDGET, BY COUNTRY **SUBSET FOR assCountry = 1**, self funded removed
 ```{r, echo = FALSE}
-country <- filter(data, assCountry == 1)
+country <- filter(noself, assCountry == 1)
 
 #--------CREATE DF FOR EXPENDITURES BY COUNTRY AND MERGE CENTROIDS
 
@@ -172,6 +163,46 @@ tab <- arrange(master, desc(amount))
 knitr::kable(tab) 
 ```
 
+# List of countries where FAO is implementer
+```{r, echo = FALSE}
+fao <- filter(data, implementer == "FAO")
+fao <- filter(data, assCountry == 1)
+fao.countries <- fao$country
+fao.countries <- strsplit(fao.countries, ",")
+fao.countries <- unlist(fao.countries)
+fao.countries <- gsub("^\\s+|\\s+$", "", fao.countries)
+fao.countries <- countrycode(fao.countries, origin = "country.name",
+                             destination = "country.name")
+
+fao.countries <- data.frame(countries = unique(fao.countries))
+knitr::kable(fao.countries)
+```
+
+
+# Number of donors by country, self funded removed
+```{r, echo = FALSE}
+donors <- removeSelfFunded(data)
+donors <- filter(donors, assCountry == 1)
+donors <- computeDonorContrib(df = donors)
+donors <- select(donors,donor, country)
+country.cols <- paste0("country_",1:20)
+
+donors <- separate(donors, country, into = country.cols,
+         sep = ",")
+
+donors.t <- donors %>%
+            gather(key, country, -donor, na.rm = TRUE)
+
+head(donors.t)
+tail(donors.t)
+
+tab <- donors.t %>%
+        group_by(country) %>%
+        summarize(noDonors = length(unique(donor)))
+    
+
+knitr::kable(tab)
+```
 # Scatterplot w/ CA score and country budget for AFRICA
 
 ```{r, echo = FALSE}
@@ -254,10 +285,12 @@ ggplot(master, aes(x=amount.mil, y=score)) +
     guides(colour = guide_legend(override.aes = list(size=5), 
                                  nrow = 2, byrow = TRUE)) +
     labs(x = "Total Amount Spent in Millions (active 2015)", y = "Country Assessment Score (2013)") +
-    theme(axis.line = element_line(colour = "black"),
+    theme(axis.line = element_line(colour = "black", size = 100),
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
           panel.border = element_blank(),
-          panel.background = element_blank()) 
+          panel.background = element_blank()) +
+    scale_x_continuous(limits = c(0,15)) +
+    scale_y_continuous(limits = c(0,75))
 
 ```

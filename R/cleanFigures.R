@@ -46,7 +46,8 @@ cleanFigures <- function(df = data) {
   
   df$country[df$country == "C\xf4te d'Ivoire"] <- "Cote d'Ivoire"
   df$country[df$country == "C\x99te d'Ivoire"] <- "Cote d'Ivoire"
-  df$country[df$country == "Cameroon"] <- "Cameroun"
+  #df$country[df$country == "Cameroon"] <- "Cameroon"
+  df$country <- gsub("\nMadagascar","Madagascar",df$country)
 
   #drop blank rows
   df <- filter(df, !is.na(supportType))
